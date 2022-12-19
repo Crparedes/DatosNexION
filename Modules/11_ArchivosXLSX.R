@@ -1,3 +1,28 @@
+ArchivosXLSX_UI <- function(id, label = "Counter") {
+  ns <- NS(id)
+  tagList(
+    tags$hr(), tags$hr(), 
+    actionButton(ns("button"), label = label),
+    verbatimTextOutput(ns("out"))
+  )
+}
+
+ArchivosXLSX_Server <- function(id, devMode) {
+  moduleServer(
+    id,
+    function(input, output, session) {
+      count <- reactiveVal(0)
+      observeEvent(input$button, {
+        count(count() + 1)
+      })
+      output$out <- renderText({
+        count()
+      })
+      count
+    }
+  )
+}
+
 # # setwd("~/0-INM.V2/2022/0_AlejandraPerez")
 # Elemento <- 'Cd'
 # 

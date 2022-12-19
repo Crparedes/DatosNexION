@@ -23,6 +23,7 @@ customBody <- dashboardBody(
   ),
   withMathJax(),
   tabItems(
-    tabItem(tabName = "inicio", tags$hr(), tags$hr(), inicioLy)
+    tabItem(tabName = "inicio", Introduccion),
+    tabItem(tabName = "ArchivosXLSX", ArchivosXLSX_UI('ArchivosXLSX'))
   )
 )

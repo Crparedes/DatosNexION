@@ -1,39 +1,19 @@
-rm(list=ls())
-gc()            # Garbage collector
+packages <- c('shiny', 'shinydashboard', 'dashboardthemes', 'shinyWidgets', 'shinycssloaders',
+              'shinyjs', 'rhandsontable', 'readxl', 'writexl')
+for(p in packages){
+  if(!require(p, character.only = TRUE)) install.packages(p)
+  library(p, character.only = TRUE)
+}
 
-# DatosNexION
-
-library(shiny)
-library(car)
-library(shinydashboard)
-library(dashboardthemes) #https://cran.r-project.org/web/packages/dashboardthemes/vignettes/using_dashboardthemes.html
-library(shinyWidgets)
-library(shinycssloaders)
-library(shinyjs) #to use hidden
-library(ggplot2) #Grammar of graphics
-library(ggfortify)
-library(rhandsontable)
-library(data.table)
-library(stringr)
-library(masscor)
-library(propagate)
-library(dplyr) # 
-library(outliers)
-library(writexl)
-library(deming)
-# icon("flask")
-
-# Por lo general, los módulos_UI son llamados desde las funciones de`` layouts
-# pack_titRation  <- with(list(pt = 'RPackage/'), paste0(pt, list.files(path = pt)))
-modules         <- with(list(pt = 'Modules/'), paste0(pt, list.files(path = pt))) # El primer m'odulo es el de variables globales  
-# layouts         <- with(list(pt = 'Layouts/'), paste0(pt, list.files(path = pt))) # functions in the client side
+modules <- with(list(pt = 'Modules/'), paste0(pt, list.files(path = pt)))
 sapply(c(modules), source)
 
 ui <- function(request) {
   withMathJax()
   useShinyjs()
-  dashboardPage(header = customHeader, sidebar = customSidebar, body = customBody,
-                title = "DatosNexION - Instituto Nacional de Metrología de Colombia") #customStuff in ./Layouts
+  dashboardPage(
+    header = customHeader, sidebar = customSidebar, body = customBody,
+    title = "DatosNexION - Instituto Nacional de Metrología de Colombia")
 }
 
 server <- function(input, output, session, devMode = TRUE) {
@@ -42,6 +22,8 @@ server <- function(input, output, session, devMode = TRUE) {
   output$brwz <- renderUI(
     if(devMode()) return(actionButton(inputId = 'brwz', label = tags$b('Pausar DatosNexION'), width = '90%')))
   observeEvent(input$brwz, browser())
+  
+  ArchivosXLSX_Server('ArchivosXLSX')
   
   # ## Inicializaci'on
   # IDUsuario  <- reactive(c(input$nombre, input$correo))
