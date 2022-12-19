@@ -23,10 +23,6 @@ customBody <- dashboardBody(
   ),
   withMathJax(),
   tabItems(
-    tabItem(tabName = "inicio", tags$hr(), tags$hr(),inicioLy),
-    tabItem(tabName = "MRC_DisTab", tags$hr(), tags$hr(), MrcDisLy),
-    tabItem(tabName = "CalibrantesTab", tags$hr(), tags$hr(), CalibraMonoLy),
-    tabItem(tabName = "EdtaTab", tags$hr(), tags$hr(), EdtaLy)#,
-    #tabItem(tabName = "bibliogr", h2("Bibliografía"))
+    tabItem(tabName = "inicio", tags$hr(), tags$hr(), inicioLy)
   )
 )
