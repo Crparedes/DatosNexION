@@ -1,9 +1,43 @@
 ArchivosXLSX_UI <- function(id, label = "Counter") {
   ns <- NS(id)
-  tagList(
-    tags$hr(), tags$hr(), 
-    actionButton(ns("button"), label = label),
-    verbatimTextOutput(ns("out"))
+  fluidRow(
+    column(
+      width = 10, offset = 1, tags$hr(), tags$br(),
+      h2(style = "margin-left: -50px;", tags$b('Combinador de archivos XLSX')), 
+      tags$br(), uiOutput(ns('brwz')),
+      tags$ol(
+        tags$li('Comprima los archivos en un fichero ZIP y cárguelo a continuación:'),
+        tags$div(
+          style = "margin-left: 20px;", 
+          fileInput(ns('ZIPfile'), label = NULL, multiple = FALSE, accept = '.zip', width = '40%',
+                    buttonLabel = tags$b('Examinar...'), placeholder = 'Un solo archivo .zip'),
+          uiOutput(ns('UploadSuccesful'))),
+        tags$hr(),
+        conditionalPanel(
+          condition = 'input.CargarZIP > 0', ns = ns,
+          tagList(
+            tags$li('Indique como leer los archivos de Excel'),
+            tags$div(
+              style = 'margin-left: 20px;', id = "inline", 
+              numericInput(ns('nskip'), label = ReqField('Número de filas a ignorar:'), value = 1, min = 0, max = 7),
+              actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar configuraciones'))),
+            tags$hr(),
+            tags$li('Verifique que el primer archivo se carga correctamente y presione el botón que sigue:'),
+            tags$div(
+              style = 'margin-left: 20px;', tableOutput(ns('ExampleFile')), tags$br(), 
+              actionButton(ns('CrearConcatenado'), label = tags$b('Crear archivo combinado')))
+          )
+        ),
+        conditionalPanel(
+          condition = 'input.CrearConcatenado > 0', ns = ns,
+          tagList('NULL')
+        )
+        # tags$hr(),
+        # tags$li('Comprima los archivos en un fichero ZIP y cárguelo a continuación:')
+      ),
+      # "Esta aplicación web facilita el uso de los archivos generados en el instrumento ICP-MS NexION 300 de Perkin Elmer.",
+      tags$br(), tags$br()
+    )
   )
 }
 
@@ -11,14 +45,31 @@ ArchivosXLSX_Server <- function(id, devMode) {
   moduleServer(
     id,
     function(input, output, session) {
-      count <- reactiveVal(0)
-      observeEvent(input$button, {
-        count(count() + 1)
+      output$brwz <- renderUI(
+        if(devMode()) return(actionButton(session$ns('brwz'), label = tags$b('Pausar módulo'))))
+      observeEvent(input$brwz, browser())
+      
+      # Carga de archivo ZIP
+      UploadSuccesful <- eventReactive(input$ZIPfile, {
+        if (is.null(unzip(input$ZIPfile$datapath))) {
+          return(tags$b('Error: Se debe subir un fichero ZIP con los archivos comprimidos'))
+        } else {
+          ZipDataFile <- unzip(input$ZIPfile$datapath)
+          if (length(unique(lapply(ZipDataFile, getExtension))) > 1) {
+            return(tags$b('Error: El fichero ZIP solo debe contener archivos de un solo tipo'))
+          }
+          return(actionButton(inputId = session$ns('CargarZIP'), width = '40%', style = 'margin-top: -10px;',
+                              label = tags$b('Cargar fichero con archivos')))
+        }
       })
-      output$out <- renderText({
-        count()
+      output$UploadSuccesful <- renderUI(UploadSuccesful())
+      
+      ExampleFile <- eventReactive(c(input$CargarZIP, input$UpdtCnfg), {
+        ZipDataFile <- unzip(input$ZIPfile$datapath)
+        return(data.frame(read_xls(ZipDataFile[1], skip = input$nskip)))
       })
-      count
+      
+      output$ExampleFile <- renderTable(ExampleFile())
     }
   )
 }

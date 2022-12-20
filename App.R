@@ -17,13 +17,14 @@ ui <- function(request) {
 }
 
 server <- function(input, output, session, devMode = TRUE) {
+  options(shiny.maxRequestSize = 10 * 1024 ^ 2) # 10 MB
   devMode <- reactive(input$Desarrollador)
   fecha <- reactive(input$Fecha)
   output$brwz <- renderUI(
     if(devMode()) return(actionButton(inputId = 'brwz', label = tags$b('Pausar DatosNexION'), width = '90%')))
   observeEvent(input$brwz, browser())
   
-  ArchivosXLSX_Server('ArchivosXLSX')
+  ArchivosXLSX_Server('ArchivosXLSX', devMode = devMode)
   
   # ## Inicializaci'on
   # IDUsuario  <- reactive(c(input$nombre, input$correo))

@@ -1,13 +1,14 @@
 Introduccion <- fluidRow(
-  column(12, tags$hr(), tags$hr(),
-    box(
-      title = div(style = 'font-size:25px', tags$b('Introducción')), width = 12, status = 'primary', collapsible = TRUE, collapsed = FALSE,
-      "Esta aplicación facilita el uso de los archivos generados en el instrumento ICP-MS NexION 300.
-      Al momento se cuenta con las siguientes utilidades::", tags$br(),
-      tags$ul(
-        tags$li("Combinar archivos de intensidades netas.")
-      ), 
-      tags$br(), tags$br()
-    )
+  column(
+    width = 10, offset = 1, tags$hr(), tags$br(), tags$br(),
+    h2(style = "margin-left: -50px;", tags$b('Aplicativo ', tags$i('DatosNexION'))), 
+    tags$br(),
+    "Esta aplicación web facilita el uso de los archivos generados en el instrumento ICP-MS NexION 300 de Perkin Elmer.",
+    tags$br(), tags$br(),
+    "Se encuentran implementadas las siguientes utilidades:", tags$br(),
+    tags$ul(
+      tags$li("Combinar múltiples archivos de intensidades netas en un solo archivo.")
+    ), 
+    tags$br(), tags$br()
   )
 )

@@ -4,16 +4,17 @@ customSidebar <- dashboardSidebar(
   sidebarMenu(
     id = "tabs", # tags$br(), tags$br(),
     menuItem("Inicio", tabName = "inicio", icon = icon("info-circle")), tags$br(),  tags$br(),
+    HTML(paste0('<h5 style="color: ', Paleta[1],
+                '"><b>&ensp;Combinador de archivos:</b></h5>')),
+    menuItem("Archivos XLSX", tabName = "ArchivosXLSX", icon = icon("file-excel")),
     
-    tags$b(HTML('&ensp;'), 'Reordenamiento de archivos'),
-    menuItem("Combinar archivos XLSX", tabName = "ArchivosXLSX", icon = icon("file-excel")),
-    
-    tags$hr(),
-    HTML('<h6 style="color: #dddddd; font-size:9px;">
-         &ensp;&ensp;&ensp;Aplicativo desarrollado por <b>Cristhian Paredes</b></h6>'),
+    HTML(paste0('<hr><h6 style="color:', Paleta[1], '; font-size:10px;">
+         &ensp;&ensp;&ensp;Aplicativo desarrollado por <b>Cristhian Paredes</b></h6>')),
     tags$br(), tags$br(), tags$br(), tags$br(),
     
-    materialSwitch('Desarrollador', 'Modo de desarrollador', status = 'primary'),
+    materialSwitch(
+      'Desarrollador', 
+      h6(style = "display: inline;", 'Modo de desarrollador'), status = 'primary'),
     uiOutput('brwz')
   )
 )
