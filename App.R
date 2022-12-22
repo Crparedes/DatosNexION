@@ -1,5 +1,5 @@
 packages <- c('shiny', 'shinydashboard', 'dashboardthemes', 'shinyWidgets', 'shinycssloaders',
-              'shinyjs', 'rhandsontable', 'readxl', 'writexl')
+              'shinyjs', 'rhandsontable', 'readxl', 'writexl', 'DT')
 for(p in packages){
   if(!require(p, character.only = TRUE)) install.packages(p)
   library(p, character.only = TRUE)

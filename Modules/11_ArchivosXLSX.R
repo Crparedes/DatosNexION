@@ -16,21 +16,31 @@ ArchivosXLSX_UI <- function(id, label = "Counter") {
         conditionalPanel(
           condition = 'input.CargarZIP > 0', ns = ns,
           tagList(
-            tags$li('Indique como leer los archivos de Excel'),
+            tags$li('Compruebe que los datos del primer archivo se hayan cargado correctamente 
+                    con sus respectivos encabezados de las columnas:'),
             tags$div(
-              style = 'margin-left: 20px;', id = "inline", 
-              numericInput(ns('nskip'), label = ReqField('Número de filas a ignorar:'), value = 1, min = 0, max = 7),
-              actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar configuraciones'))),
+              style = 'margin-left: 20px;', id = "inline", tags$br(),
+              tags$div(
+                style = paste0('background-color:', Paleta[8], ';'), 
+                DT::dataTableOutput(ns('ExampleFile'))), 
+              splitLayout(
+                cellWidths = '30%',
+                numericInput(ns('nskip'), label = ReqField('Filas a ignorar:'), value = 1, min = 0, max = 7),
+                actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar')))
+            ),
             tags$hr(),
-            tags$li('Verifique que el primer archivo se carga correctamente y presione el botón que sigue:'),
+            tags$li('Si el archivo se ve bien presione el siguiente botón:'),
             tags$div(
-              style = 'margin-left: 20px;', tableOutput(ns('ExampleFile')), tags$br(), 
-              actionButton(ns('CrearConcatenado'), label = tags$b('Crear archivo combinado')))
+              style = 'margin-left: 20px;',  
+              actionButton(ns('CrearConcatenado'), label = tags$b('Crear archivo con todos los datos'), width = '40%'))
           )
         ),
         conditionalPanel(
           condition = 'input.CrearConcatenado > 0', ns = ns,
-          tagList('NULL')
+          tags$hr(), tags$li('Descargue su archivo:'),
+          tags$div(
+            style = 'margin-left: 20px;',
+            downloadButton(ns('ExcelConcatenado'), label = tags$b('Descargar archivo Excel')))
         )
         # tags$hr(),
         # tags$li('Comprima los archivos en un fichero ZIP y cárguelo a continuación:')
@@ -69,7 +79,10 @@ ArchivosXLSX_Server <- function(id, devMode) {
         return(data.frame(read_xls(ZipDataFile[1], skip = input$nskip)))
       })
       
-      output$ExampleFile <- renderTable(ExampleFile())
+      output$ExampleFile <- DT::renderDataTable({
+        datatable(data = ExampleFile(), options = list(scrollX = TRUE, dom = 't')) %>% 
+          formatRound(which(sapply(ExampleFile(), is.numeric)), digits = 4, mark = '')
+      })
     }
   )
 }

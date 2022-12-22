@@ -8,7 +8,6 @@
 .skin-blue .input-group-btn > .btn:hover {
     background: #2F575D;
     color: #C4CDC1;
-    border-color: rgb(200,200,200);
 }
 
 .bg-light-blue, .label-primary, .modal-primary .modal-body {

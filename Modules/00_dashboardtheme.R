@@ -1,6 +1,5 @@
-Paleta <- c('#28363D', '#2F575D', '#658B6F', 
-            '#6D9197', '#99AEAD', '#C4CDC1', 
-            '#DEE1DD', '#FFFFFF')
+Paleta <- c('#28363D', '#2F575D', '#658B6F', '#6D9197', 
+            '#99AEAD', '#C4CDC1', '#DEE1DD', '#FFFFFF')
 
 customTheme <- shinyDashboardThemeDIY(
   ### general
