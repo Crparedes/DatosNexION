@@ -24,7 +24,8 @@ server <- function(input, output, session, devMode = TRUE) {
     if(devMode()) return(actionButton(inputId = 'brwz', label = tags$b('Pausar DatosNexION'), width = '90%')))
   observeEvent(input$brwz, browser())
   
-  ArchivosXLSX_Server('ArchivosXLSX', devMode = devMode)
+  CombFiles_Server('CombFilesExcel', devMode = devMode, FlTy = 'Excel')
+  CombFiles_Server('CombFilesDAC', devMode = devMode, FlTy = 'DAC')
   
   # ## Inicializaci'on
   # IDUsuario  <- reactive(c(input$nombre, input$correo))

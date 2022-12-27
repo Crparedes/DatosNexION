@@ -19,6 +19,7 @@ customBody <- dashboardBody(
   withMathJax(),
   tabItems(
     tabItem(tabName = "inicio", Introduccion),
-    tabItem(tabName = "ArchivosXLSX", ArchivosXLSX_UI('ArchivosXLSX'))
+    tabItem(tabName = "CombFilesExcel", CombFiles_UI('CombFilesExcel', FlTy = 'Excel')),
+    tabItem(tabName = "CombFilesDAC", CombFiles_UI('CombFilesDAC', FlTy = 'DAC'))
   )
 )

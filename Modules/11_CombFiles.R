@@ -1,12 +1,17 @@
-ArchivosXLSX_UI <- function(id, label = "Counter") {
+CombFiles_UI <- function(id, label = "Counter", FlTy = 'Excel') {
   ns <- NS(id)
   fluidRow(
     column(
       width = 10, offset = 1, tags$hr(), tags$br(),
-      h2(style = "margin-left: -50px;", tags$b('Combinador de archivos XLSX')), 
+      h2(style = "margin-left: -50px;", tags$b('Combinador de archivos', FlTy)), 
       tags$br(), uiOutput(ns('brwz')),
       tags$ol(
-        tags$li('Comprima los archivos en un fichero ZIP y cárguelo a continuación:'),
+        tags$li(
+          'Comprima los archivos en un fichero ZIP', 
+          tags$sup(tags$a(
+            tags$small(icon('question')), target = '_blank',
+            href = 'https://support.microsoft.com/es-es/windows/comprimir-y-descomprimir-archivos-8d28fa72-f2f9-712f-67df-f80cf89fd4e5')),
+          spcs(1), ' y cárguelo a continuación:'),
         tags$div(
           style = "margin-left: 20px;", 
           fileInput(ns('ZIPfile'), label = NULL, multiple = FALSE, accept = '.zip', width = '40%',
@@ -16,20 +21,23 @@ ArchivosXLSX_UI <- function(id, label = "Counter") {
         conditionalPanel(
           condition = 'input.CargarZIP > 0', ns = ns,
           tagList(
-            tags$li('Compruebe que los datos del primer archivo se hayan cargado correctamente 
-                    con sus respectivos encabezados de las columnas:'),
+            tags$li('Compruebe en la siguiente tabla que los datos del primer archivo se cargaron bien 
+                    y que los encabezados de las columnas aparecen en negrilla en la primera fila:',
+                    tags$br(),
+                    '(Modifique el número de filas a ignorar hasta que la tabla se vea correctamente.)'),
             tags$div(
               style = 'margin-left: 20px;', id = "inline", tags$br(),
               tags$div(
                 style = paste0('background-color:', Paleta[8], ';'), 
                 DT::dataTableOutput(ns('ExampleFile'))), 
-              splitLayout(
-                cellWidths = '30%',
+              tags$small(splitLayout(
+                cellWidths = '20%',
                 numericInput(ns('nskip'), label = ReqField('Filas a ignorar:'), value = 1, min = 0, max = 7),
-                actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar')))
+                actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar'))))
             ),
             tags$hr(),
-            tags$li('Si el archivo se ve bien presione el siguiente botón:'),
+            tags$li('Cuando la tabla del primer archivo se vea bien presione el botón que sigue.',
+                    'Recuerde que todos los archivos de la carpeta comprimida deben tener las mismas columnas.'),
             tags$div(
               style = 'margin-left: 20px;',  
               actionButton(ns('CrearConcatenado'), label = tags$b('Crear archivo con todos los datos'), width = '40%'))
@@ -45,13 +53,12 @@ ArchivosXLSX_UI <- function(id, label = "Counter") {
         # tags$hr(),
         # tags$li('Comprima los archivos en un fichero ZIP y cárguelo a continuación:')
       ),
-      # "Esta aplicación web facilita el uso de los archivos generados en el instrumento ICP-MS NexION 300 de Perkin Elmer.",
       tags$br(), tags$br()
     )
   )
 }
 
-ArchivosXLSX_Server <- function(id, devMode) {
+CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
   moduleServer(
     id,
     function(input, output, session) {
@@ -62,27 +69,63 @@ ArchivosXLSX_Server <- function(id, devMode) {
       # Carga de archivo ZIP
       UploadSuccesful <- eventReactive(input$ZIPfile, {
         if (is.null(unzip(input$ZIPfile$datapath))) {
-          return(tags$b('Error: Se debe subir un fichero ZIP con los archivos comprimidos'))
+          return(tags$b('Error: Se debe subir un fichero ZIP con los archivos comprimidos.'))
         } else {
           ZipDataFile <- unzip(input$ZIPfile$datapath)
-          if (length(unique(lapply(ZipDataFile, getExtension))) > 1) {
-            return(tags$b('Error: El fichero ZIP solo debe contener archivos de un solo tipo'))
-          }
-          return(actionButton(inputId = session$ns('CargarZIP'), width = '40%', style = 'margin-top: -10px;',
-                              label = tags$b('Cargar fichero con archivos')))
+          UplFileExt <- unique(lapply(ZipDataFile, getExtension))
+          if (length(UplFileExt) > 1) {
+            return(tags$b('Error: El fichero ZIP debe contener archivos de un solo tipo.'))}
+          if (FlTy == 'Excel' && UplFileExt != 'xls' && UplFileExt != 'xlsx') {
+            return(tags$b('Error: El fichero ZIP debe contener archivos de excel (extensiones .xls y .xlsx).'))}
+          if (FlTy == 'DAC' && UplFileExt != 'dac') {
+            return(tags$b('Error: El fichero ZIP debe contener archivos DAC (extension .dac).'))}
+          
+          niceOUT <- tagList(
+            'Número de archivos en el fichero:', tags$b(length(ZipDataFile)), tags$br(),
+            actionButton(inputId = session$ns('CargarZIP'), width = '40%', 
+                         label = tags$b('Cargar fichero ZIP'))
+          )
+          return(niceOUT)
         }
       })
       output$UploadSuccesful <- renderUI(UploadSuccesful())
       
+      # Tabla de ejemplo del primer archivo
+      ZipDataFile <- eventReactive(c(input$CargarZIP, input$UpdtCnfg), {
+        return(unzip(input$ZIPfile$datapath))
+      })  
       ExampleFile <- eventReactive(c(input$CargarZIP, input$UpdtCnfg), {
-        ZipDataFile <- unzip(input$ZIPfile$datapath)
-        return(data.frame(read_xls(ZipDataFile[1], skip = input$nskip)))
+        return(data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))
       })
       
       output$ExampleFile <- DT::renderDataTable({
         datatable(data = ExampleFile(), options = list(scrollX = TRUE, dom = 't')) %>% 
           formatRound(which(sapply(ExampleFile(), is.numeric)), digits = 4, mark = '')
       })
+      
+      # unión de archivos
+      Concatenado <- eventReactive(input$CrearConcatenado, {
+        MergedData <- cbind(Archivo = ZipDataFile()[1],
+                            data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))
+        for (i in 2:length(ZipDataFile())) {
+          MergedData <- rbind(MergedData,
+                              cbind(Archivo = ZipDataFile()[i],
+                                    data.frame(read_excel(ZipDataFile()[1], skip = input$nskip))))
+        }
+        return(MergedData)
+      })
+      
+      # Descarga de excel con información
+      output$ExcelConcatenado <- downloadHandler(
+        filename = function() {
+          paste0(
+            format(Sys.time(), format = "%F_%R"), '_', 
+            sub("\\..*", "", input$ZIPfile$name), '_Concatenado', '.xlsx')}, 
+        content = function(file) {
+          write_xlsx(x = Concatenado(), path = file, format_headers = TRUE)}, 
+        contentType = NULL)
+      
+    
     }
   )
 }
@@ -116,5 +159,5 @@ ArchivosXLSX_Server <- function(id, devMode) {
 # }
 # 
 # library(writexl)
-# write_xlsx(MergedData, paste0("datosElemento_", Elemento, ".xlsx"))
+# , paste0("datosElemento_", Elemento, ".xlsx"))
 # rm(list = ls())
