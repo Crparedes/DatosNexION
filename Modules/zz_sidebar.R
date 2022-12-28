@@ -3,11 +3,11 @@ customSidebar <- dashboardSidebar(
   width = 300, withMathJax(),
   sidebarMenu(
     id = "tabs", # tags$br(), tags$br(),
-    menuItem("Inicio", tabName = "inicio", icon = icon("info-circle")), tags$br(),  tags$br(),
+    menuItem(tags$b("Inicio"), tabName = "inicio", icon = icon("info-circle")), tags$br(),  tags$br(),
     # HTML(paste0('<h5 style="color: ', Paleta[1],
     #             '"><b>&ensp;Combinador de archivos:</b></h5>')),
-    menuItem("Combinador de archivos Excel", tabName = "CombFilesExcel", icon = icon("file-excel")),
-    menuItem("Combinador de archivos DAC", tabName = "CombFilesDAC", icon = icon("file")),
+    menuItem(tags$b("Combinar archivos DAC"), tabName = "CombFilesDAC", icon = icon("file")),
+    menuItem(tags$b("Combinar archivos Excel"), tabName = "CombFilesExcel", icon = icon("file-excel")),
     
     # HTML(paste0('<hr><h6 style="color:', Paleta[1], '; font-size:10px;">
          # &ensp;&ensp;&ensp;Aplicativo desarrollado por <b>Cristhian Paredes</b></h6>')),

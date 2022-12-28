@@ -30,10 +30,10 @@ CombFiles_UI <- function(id, label = "Counter", FlTy = 'Excel') {
               tags$div(
                 style = paste0('background-color:', Paleta[8], ';'), 
                 DT::dataTableOutput(ns('ExampleFile'))), 
-              tags$small(splitLayout(
+              splitLayout(
                 cellWidths = '20%',
                 numericInput(ns('nskip'), label = ReqField('Filas a ignorar:'), value = 1, min = 0, max = 7),
-                actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar'))))
+                actionButton(ns('UpdtCnfg'), label = tags$b('Actualizar')))
             ),
             tags$hr(),
             tags$li('Cuando la tabla del primer archivo se vea bien presione el botón que sigue.',
@@ -105,13 +105,19 @@ CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
       
       # unión de archivos
       Concatenado <- eventReactive(input$CrearConcatenado, {
-        MergedData <- cbind(Archivo = ZipDataFile()[1],
-                            data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))
-        for (i in 2:length(ZipDataFile())) {
-          MergedData <- rbind(MergedData,
-                              cbind(Archivo = ZipDataFile()[i],
-                                    data.frame(read_excel(ZipDataFile()[1], skip = input$nskip))))
+        if (FlTy == 'Excel') {
+          MergedData <- cbind(Archivo = ZipDataFile()[1],
+                              data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))
+          for (i in 2:length(ZipDataFile())) {
+            MergedData <- rbind(MergedData,
+                                cbind(Archivo = ZipDataFile()[i],
+                                      data.frame(read_excel(ZipDataFile()[1], skip = input$nskip))))
+          }
         }
+        if (FlTy == 'DAC') {
+          
+        }
+        
         return(MergedData)
       })
       

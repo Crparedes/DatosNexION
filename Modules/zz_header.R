@@ -1,8 +1,11 @@
-customHeader <- dashboardHeader(tags$li(class = "dropdown",
-                            tags$style(".main-header {max-height: 100px}"),
-                            tags$style(".main-header .logo {height: 100px}")),
-                    titleWidth = 4000, 
-                    title = tags$div(HTML('<table text-align = left cellspacing = -20 cellPadding=0>
+customHeader <- dashboardHeader(
+  tags$li(
+    class = "dropdown",
+    tags$style(".main-header {max-height: 100px}"),
+    tags$style(".main-header .logo {height: 100px}")),
+  titleWidth = 4000, 
+  title = tags$div(HTML(
+    '<table text-align = left cellspacing = -20 cellPadding=0>
     <tr><th rowspan = 2><a id = "logo" href = "http://www.inm.gov.co"
     title = "DatosNexION - SMQB" data-height="80">
     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
