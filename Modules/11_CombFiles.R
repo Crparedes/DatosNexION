@@ -68,10 +68,10 @@ CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
       
       # Carga de archivo ZIP
       UploadSuccesful <- eventReactive(input$ZIPfile, {
-        if (is.null(unzip(input$ZIPfile$datapath))) {
+        if (is.null(unzip(input$ZIPfile$datapath, exdir = getwd()))) {
           return(tags$b('Error: Se debe subir un fichero ZIP con los archivos comprimidos.'))
         } else {
-          ZipDataFile <- unzip(input$ZIPfile$datapath)
+          ZipDataFile <- unzip(input$ZIPfile$datapath, exdir = getwd())
           UplFileExt <- unique(lapply(ZipDataFile, getExtension))
           if (length(UplFileExt) > 1) {
             return(tags$b('Error: El fichero ZIP debe contener archivos de un solo tipo.'))}
@@ -92,7 +92,7 @@ CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
       
       # Tabla de ejemplo del primer archivo
       ZipDataFile <- eventReactive(c(input$CargarZIP, input$UpdtCnfg), {
-        return(unzip(input$ZIPfile$datapath))
+        return(unzip(input$ZIPfile$datapath, exdir = getwd()))
       })  
       ExampleFile <- eventReactive(c(input$CargarZIP, input$UpdtCnfg), {
         return(data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))

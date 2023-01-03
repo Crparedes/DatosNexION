@@ -1,5 +1,5 @@
 # https://stackoverflow.com/a/52511866/7612904
-getExtension <- function(file) strsplit(file, ".", fixed = TRUE)[[1]][3]
+getExtension <- function(file) with(list(XX = strsplit(file, ".", fixed = TRUE)[[1]]), return(XX[length(XX)]))
 
 spcs <- function(n) {return(HTML(paste0(rep('&nbsp;', n), collapse = '')))}
 
