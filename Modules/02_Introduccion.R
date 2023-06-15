@@ -7,8 +7,8 @@ Introduccion <- fluidRow(
     tags$br(), tags$br(),
     'El aplicativo', tags$b('DatosNexION'), "tiene las siguientes funciones:", tags$br(),
     tags$ul(
-      tags$li("Combinar múltiples archivos DAC de intensidades netas, en un solo archivo de Excel."),
-      tags$li("Combinar múltiples archivos Excel de intensidades netas, en un solo archivo de Excel.")
+      tags$li("Analizar el reporte de", tags$em("Performance Check.")),
+      tags$li("Combinar múltiples archivos de intensidades netas (formato DAC o Excel), en un solo archivo de Excel.")
     ), 
     tags$br(), tags$br()
   ),

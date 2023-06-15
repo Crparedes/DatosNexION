@@ -6,6 +6,8 @@ customSidebar <- dashboardSidebar(
     menuItem(tags$b("Inicio"), tabName = "inicio", icon = icon("info-circle")), tags$br(),  tags$br(),
     # HTML(paste0('<h5 style="color: ', Paleta[1],
     #             '"><b>&ensp;Combinador de archivos:</b></h5>')),
+    menuItem(tags$b("Analizar", tags$em("Performance Check")), tabName = "PerfCheck", icon = icon("check")),
+    tags$br(),
     menuItem(tags$b("Combinar archivos DAC"), tabName = "CombFilesDAC", icon = icon("file")),
     menuItem(tags$b("Combinar archivos Excel"), tabName = "CombFilesExcel", icon = icon("file-excel")),
     

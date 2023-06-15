@@ -1,12 +1,4 @@
-packages <- c('shiny', 'shinydashboard', 'dashboardthemes', 'shinyWidgets', 'shinycssloaders',
-              'shinyjs', 'rhandsontable', 'readxl', 'writexl', 'DT')
-for(p in packages){
-  if(!require(p, character.only = TRUE)) install.packages(p)
-  library(p, character.only = TRUE)
-}
-
-modules <- with(list(pt = 'Modules/'), paste0(pt, list.files(path = pt)))
-sapply(c(modules), source)
+source('global.R')
 
 ui <- function(request) {
   withMathJax()
@@ -24,6 +16,7 @@ server <- function(input, output, session, devMode = TRUE) {
     if(devMode()) return(actionButton(inputId = 'brwz', label = tags$b('Pausar DatosNexION'), width = '90%')))
   observeEvent(input$brwz, browser())
   
+  PerfCheck_Server('PerfCheck', devMode = devMode)
   CombFiles_Server('CombFilesExcel', devMode = devMode, FlTy = 'Excel')
   CombFiles_Server('CombFilesDAC', devMode = devMode, FlTy = 'DAC')
   

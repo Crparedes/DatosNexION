@@ -1,0 +1,14 @@
+name: DatosNexION
+title: DatosNexION
+username:
+account: crparedes
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7969591
+bundleId: 6693728
+url: https://crparedes.shinyapps.io/DatosNexION/
+when: 1672764929.33535
+lastSyncTime: 1672764929.33537
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: CdExcel.zip

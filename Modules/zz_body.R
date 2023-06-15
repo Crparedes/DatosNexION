@@ -20,6 +20,7 @@ customBody <- dashboardBody(
   tabItems(
     tabItem(tabName = "inicio", Introduccion),
     tabItem(tabName = "CombFilesExcel", CombFiles_UI('CombFilesExcel', FlTy = 'Excel')),
-    tabItem(tabName = "CombFilesDAC", CombFiles_UI('CombFilesDAC', FlTy = 'DAC'))
+    tabItem(tabName = "CombFilesDAC", CombFiles_UI('CombFilesDAC', FlTy = 'DAC')),
+    tabItem(tabName = "PerfCheck", PerfCheck_UI('PerfCheck'))
   )
 )
