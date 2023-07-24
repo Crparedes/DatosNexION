@@ -6,10 +6,11 @@ customSidebar <- dashboardSidebar(
     menuItem(tags$b("Inicio"), tabName = "inicio", icon = icon("info-circle")), tags$br(),  tags$br(),
     # HTML(paste0('<h5 style="color: ', Paleta[1],
     #             '"><b>&ensp;Combinador de archivos:</b></h5>')),
-    menuItem(tags$b("Analizar", tags$em("Performance Check")), tabName = "PerfCheck", icon = icon("check")),
+    menuItem(tags$b('(pending) ', "Analizar", tags$em("Performance Check")),
+             tabName = "PerfCheck", icon = icon("check")),
     tags$br(),
-    menuItem(tags$b("Combinar archivos DAC"), tabName = "CombFilesDAC", icon = icon("file")),
     menuItem(tags$b("Combinar archivos Excel"), tabName = "CombFilesExcel", icon = icon("file-excel")),
+    menuItem(tags$b('(pending) ', "Combinar archivos DAC"), tabName = "CombFilesDAC", icon = icon("file")),
     
     # HTML(paste0('<hr><h6 style="color:', Paleta[1], '; font-size:10px;">
          # &ensp;&ensp;&ensp;Aplicativo desarrollado por <b>Cristhian Paredes</b></h6>')),

@@ -95,7 +95,8 @@ CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
         return(unzip(input$ZIPfile$datapath, exdir = getwd()))
       })  
       ExampleFile <- eventReactive(c(input$CargarZIP, input$UpdtCnfg), {
-        return(data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))
+        df <- data.frame(read_excel(ZipDataFile()[1], skip = input$nskip))
+        return(df[rowSums(is.na(df)) != ncol(df), ])
       })
       
       output$ExampleFile <- DT::renderDataTable({
@@ -106,12 +107,14 @@ CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
       # unión de archivos
       Concatenado <- eventReactive(input$CrearConcatenado, {
         if (FlTy == 'Excel') {
+          df <- data.frame(read_excel(ZipDataFile()[1], skip = input$nskip))
           MergedData <- cbind(Archivo = ZipDataFile()[1],
-                              data.frame(read_excel(ZipDataFile()[1], skip = input$nskip)))
+                              df[rowSums(is.na(df)) != ncol(df), ])
           for (i in 2:length(ZipDataFile())) {
+            df <- data.frame(read_excel(ZipDataFile()[i], skip = input$nskip))
             MergedData <- rbind(MergedData,
                                 cbind(Archivo = ZipDataFile()[i],
-                                      data.frame(read_excel(ZipDataFile()[1], skip = input$nskip))))
+                                      df[rowSums(is.na(df)) != ncol(df), ]))
           }
         }
         if (FlTy == 'DAC') {
