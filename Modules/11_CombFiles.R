@@ -112,9 +112,8 @@ CombFiles_Server <- function(id, devMode, FlTy = 'Excel') {
                               df[rowSums(is.na(df)) != ncol(df), ])
           for (i in 2:length(ZipDataFile())) {
             df <- data.frame(read_excel(ZipDataFile()[i], skip = input$nskip))
-            MergedData <- rbind(MergedData,
-                                cbind(Archivo = ZipDataFile()[i],
-                                      df[rowSums(is.na(df)) != ncol(df), ]))
+            MergedData <- dplyr::bind_rows(MergedData,
+                                           cbind(Archivo = ZipDataFile()[i], df[rowSums(is.na(df)) != ncol(df), ]))
           }
         }
         if (FlTy == 'DAC') {
